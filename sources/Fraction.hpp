@@ -125,12 +125,12 @@ static Fraction floatToFraction(float num); // taken from gpt
   }
  
  //ostream and istream
-  friend ostream &operator<<(ostream &ostrea, const Fraction &frac) {
+  friend ostream &operator<<(ostream &ostrea, const Fraction &frac) {// taken the idea from gpt
     ostrea << frac.numerator << "/" << frac.denominator;
     return ostrea;
   }
 
-  friend istream &operator>>(istream &istrea, Fraction &frac) {
+  friend istream &operator>>(istream &istrea, Fraction &frac) { // taken the idea from gpt
     int numurt = 0;
     int denom = 1;
 
