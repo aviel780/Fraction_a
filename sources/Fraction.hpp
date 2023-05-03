@@ -1,68 +1,160 @@
-#ifndef Fraction_hpp
-#define Fraction_hpp
+#ifndef FRACTION_H
+#define FRACTION_H
+
 #include <iostream>
-
+#include <stdexcept>
+#include <unistd.h>
+#include <cmath>
 using namespace std;
-namespace ariel{
-    class Fraction{
-        int numerator;
-        int denominator;
-        
+namespace ariel {
 
-        public:
+class Fraction {
+private:
+  int numerator;
+  int denominator;
+  
 
-        Fraction (int numerator, int denominator);
-        // Fraction(double number);
-        
+public:
+  Fraction();
+  Fraction(int num, int denominator);
+  Fraction(float num, float denominator);
+  Fraction(float num);
 
-        
+    // opertors
+  Fraction operator+(const Fraction &other);
+  Fraction operator-(const Fraction &other);
+  Fraction operator*(const Fraction &other);
+  Fraction operator/(const Fraction &other);
 
-        Fraction operator+(const Fraction& other) const;
+  // bool opertors
+  bool operator==(const Fraction &other) const;
+  bool operator!=(const Fraction &other) const;
+  bool operator>(const Fraction &other) const;
+  bool operator<(const Fraction &other) const;
+  bool operator>=(const Fraction &other) const;
+  bool operator<=(const Fraction &other) const;
 
-        // friend Fraction operator+(const Fraction &other, const double &number);
+  //prefix &postfix
+   Fraction &operator++();   
+  Fraction operator++(int);  
+  Fraction &operator--();   
+  Fraction operator--(int); 
 
-        Fraction operator-(const Fraction& other) const;
+// get a float number and return the float as Fraction
+static Fraction floatToFraction(float num); // taken from gpt
+// opertors fruncsion and oprison   
+  friend Fraction operator+(const float &f_num, const Fraction &frac) {   
+    Fraction temp = floatToFraction(f_num);
+    float lc = lcm(temp.denominator,frac.denominator);
+    float numor = (temp.numerator * (lc/temp.denominator)) + (frac.numerator * (lc/frac.denominator));
+    return Fraction(numor, lc);
+  }
+  friend Fraction operator-(const float &f_num, const Fraction &frac) {
+    Fraction temp = floatToFraction(f_num);
+    float lc = lcm(temp.denominator,frac.denominator);
+    float numor = (temp.numerator * (lc/temp.denominator)) - (frac.numerator * (lc/frac.denominator));
+    return Fraction(numor, lc);
+  }
+  friend Fraction operator*(float f_num, const Fraction &frac) {
+    Fraction temp = floatToFraction(f_num);
+    float num = temp.numerator * frac.numerator;
+    float denom = temp.denominator*frac.denominator;
+    return Fraction(num, denom);
+  }
+  friend Fraction operator/(const float &f_num, const Fraction &frac) {
+    Fraction temp = floatToFraction(f_num);
+    if (frac.numerator == 0 || temp.denominator == 0) {
+      throw "Error: cannot divide by zero.";
+      return frac;
+    }
+    float num = temp.numerator * frac.denominator;
+    float denom = temp.denominator * frac.numerator;
+    return Fraction(num, denom);
+  }
 
-        // friend Fraction operator-(const Fraction &other, const double &number);
+// bool opertors 
+  friend bool operator==(float f_num, const Fraction &frac) {
+    Fraction temp = floatToFraction(f_num);
+    temp.reduce();
+    return (temp == frac);
+  }
+  friend bool operator==(const Fraction &frac, float f_num) {
+   Fraction temp = floatToFraction(f_num);
+    temp.reduce();
+    return (temp == frac);
+  }
+  friend bool operator>(float f_num, const Fraction &frac) {
+    Fraction temp = floatToFraction(f_num);
+    temp.reduce();
+    return (temp > frac);
+  }
+  friend bool operator>(const Fraction &frac, float f_num) {
+    Fraction temp = floatToFraction(f_num);
+    temp.reduce();
+    return (frac > temp);
+  }
+  friend bool operator<(float f_num, const Fraction &frac) {
+    Fraction temp = floatToFraction(f_num);
+    temp.reduce();
+    return (temp < frac);
+  }
+  friend bool operator<(const Fraction &frac, float f_num) {
+    Fraction temp = floatToFraction(f_num);
+    temp.reduce();
+    return (frac < temp);
+  }
+  friend bool operator>=(float f_num, const Fraction &frac) {
+   Fraction temp = floatToFraction(f_num);
+    temp.reduce();
+    return (temp >= frac);
+  }
+  friend bool operator>=(const Fraction &frac, float f_num) {
+    Fraction temp = floatToFraction(f_num);
+    temp.reduce();
+    return (frac >= temp);
+  }
+  friend bool operator<=(float f_num, const Fraction &frac) {
+    Fraction temp = floatToFraction(f_num);
+    temp.reduce();
+    return (temp <= frac);
+  }
+  friend bool operator<=(const Fraction &frac, float f_num) {
+    Fraction temp = floatToFraction(f_num);
+    temp.reduce();
+    return (frac <= temp);
+  }
+ 
+ //ostream and istream
+  friend ostream &operator<<(ostream &ostrea, const Fraction &frac) {
+    ostrea << frac.numerator << "/" << frac.denominator;
+    return ostrea;
+  }
 
-        Fraction operator*(const Fraction& other) const; 
+  friend istream &operator>>(istream &istrea, Fraction &frac) {
+    int numurt = 0;
+    int denom = 1;
 
-        // friend Fraction operator*(const double &number, const Fraction &other);
+    if (!(istrea >> numurt >> denom)) {
+      throw runtime_error("Invalid input format");
+    }
 
-        Fraction operator/(const Fraction& other) const;
-        
-        bool operator==(const Fraction& other) const;
+    if (denom == 0) {
+      throw runtime_error("Divide by zero");
+    }
 
-        bool operator>(const Fraction& other) const;
+    frac = Fraction(numurt, denom);
+    frac.reduce();
 
-        bool operator>(const double &number) const;
+    return istrea;
+  }
 
-        bool operator<(const Fraction& other) const;
+  int getNumerator();
+  int getDenominator();
+  void reduce();
+  static int gcd(int num, int denominator);
+  static int lcm(int num, int denominator);
 
-        bool operator>=(const Fraction& other) const;
-
-        bool operator<=(const Fraction& other) const;
-
-        bool operator!=(const Fraction &other) const;
-
-        Fraction& operator++(); // prefix
-
-        Fraction& operator--(); // prefix
-
-        Fraction operator++(int incer); // postfix
-
-        Fraction operator--(int dcer); // postfix
-
-        friend ostream& operator<<(ostream& os, const Fraction& f); // taken from gpt
-
-        friend ostream& operator>>(ostream& os, const Fraction& f);// taken from gpt
-
-        
-
-
-    };
-}
-
-
-
+  
+};
+} // namespace ariel
 #endif
