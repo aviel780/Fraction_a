@@ -45,20 +45,20 @@ static Fraction floatToFraction(float num); // taken from gpt
 // opertors fruncsion and oprison   
   friend Fraction operator+(const float &f_num, const Fraction &frac) {   
     Fraction temp = floatToFraction(f_num);
-    float lc = lcm(temp.denominator,frac.denominator);
-    float numor = (temp.numerator * (lc/temp.denominator)) + (frac.numerator * (lc/frac.denominator));
-    return Fraction(numor, lc);
+    float lcmf = ((float)lcm(temp.denominator,frac.denominator));
+    float numor = ((float)temp.numerator * ((float)lcmf/(float)temp.denominator)) + ((float)frac.numerator * ((float)lcmf/(float)frac.denominator));
+    return Fraction(numor, lcmf);
   }
   friend Fraction operator-(const float &f_num, const Fraction &frac) {
     Fraction temp = floatToFraction(f_num);
-    float lc = lcm(temp.denominator,frac.denominator);
-    float numor = (temp.numerator * (lc/temp.denominator)) - (frac.numerator * (lc/frac.denominator));
-    return Fraction(numor, lc);
+    float lcmf = ((float)lcm(temp.denominator,frac.denominator));
+    float numor = ((float)temp.numerator * ((float)lcmf/(float)temp.denominator)) - ((float)frac.numerator * ((float)lcmf/(float)frac.denominator));
+    return Fraction(numor, lcmf);
   }
   friend Fraction operator*(float f_num, const Fraction &frac) {
     Fraction temp = floatToFraction(f_num);
-    float num = temp.numerator * frac.numerator;
-    float denom = temp.denominator*frac.denominator;
+    float num = ((float)temp.numerator * (float)frac.numerator);
+    float denom = ((float)temp.denominator*(float)frac.denominator);
     return Fraction(num, denom);
   }
   friend Fraction operator/(const float &f_num, const Fraction &frac) {
@@ -67,8 +67,8 @@ static Fraction floatToFraction(float num); // taken from gpt
       throw "Error: cannot divide by zero.";
       return frac;
     }
-    float num = temp.numerator * frac.denominator;
-    float denom = temp.denominator * frac.numerator;
+    float num = ((float)temp.numerator * (float)frac.denominator);
+    float denom = ((float)temp.denominator * (float)frac.numerator);
     return Fraction(num, denom);
   }
 
